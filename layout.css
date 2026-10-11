@@ -1,0 +1,360 @@
+/* ===== Часть 1: сброс box model ===== */
+/* width/height включают padding и border */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, Arial, sans-serif;
+  background: #f5f7f2;
+  color: #1f2a1f;
+}
+
+img {
+  max-width: 100%;   /* картинка никогда не вылезет за контейнер */
+  display: block;
+}
+
+/* ===== Шапка (mobile-first) ===== */
+/* Телефон: логотип и бургер в первой строке, корзина под ними, меню скрыто */
+.topbar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px 16px;
+  padding: 12px 24px;
+  background: #2e7d32;
+  color: #fff;
+}
+
+.topbar__logo {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #fff;
+  text-decoration: none;
+}
+
+.topbar__burger {
+  border: none;
+  background: none;
+  color: #fff;
+  font-size: 1.6rem;
+  cursor: pointer;
+}
+
+.topbar__menu {
+  display: none;
+  width: 100%;
+}
+
+.topbar__menu--open {
+  display: block;
+}
+
+.topbar__nav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  list-style: none;   /* убираем точки у <li> */
+  margin: 0;
+  padding: 0;
+}
+
+.topbar__nav a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.topbar__nav a:hover {
+  text-decoration: underline;
+  color: #c8e6c9;
+}
+
+.topbar__cart {
+  width: 100%;
+  text-align: center;
+  font-weight: 600;
+}
+
+/* Планшет и выше: бургер скрыт, меню в ряд */
+@media (min-width: 768px) {
+  .topbar {
+    flex-wrap: nowrap;
+  }
+
+  .topbar__burger {
+    display: none;
+  }
+
+  .topbar__menu {
+    display: block;
+    width: auto;
+  }
+
+  .topbar__nav {
+    flex-direction: row;
+    gap: 24px;
+  }
+
+  .topbar__cart {
+    width: auto;
+  }
+}
+
+/* ===== Панель над каталогом ===== */
+.catalog__bar {
+  display: flex;
+  justify-content: space-between;   /* заголовок слева, поиск справа */
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;                  /* на узком экране поиск переносится */
+  margin-bottom: 16px;
+}
+
+.catalog__bar h2 {
+  margin: 0;
+}
+
+.catalog__bar input {
+  padding: 8px 12px 8px 36px;
+  min-width: 240px;
+  border: 1px solid #b9c4b5;
+  border-radius: 8px;
+  font: inherit;
+  background: #fff url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23667' stroke-width='2'><circle cx='11' cy='11' r='7'/><path d='M20 20l-4-4'/></svg>") no-repeat 12px center;
+}
+
+/* ===== Карточка (телефон: картинка слева, текст справа) ===== */
+.product {
+  display: grid;
+  grid-template-columns: 96px 1fr;
+  gap: 4px 12px;
+  align-items: center;
+  padding: 12px;
+  background: #fff;
+  border: 1px solid #dfe6dc;
+  border-radius: 10px;
+}
+
+.product img {
+  grid-row: span 3;
+  width: 96px;
+  height: 96px;
+  object-fit: cover;        /* обрезать, а не растягивать картинку */
+  border-radius: 6px;
+}
+
+.product h3, .product p {
+  margin: 0;
+}
+
+.product p {
+  font-size: 0.9rem;
+}
+
+.product button {
+  padding: 8px;
+  border: none;
+  border-radius: 6px;
+  background: #2e7d32;
+  color: #fff;
+  cursor: pointer;
+}
+
+/* ===== Сетка каталога ===== */
+.catalog__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+/* Товар недели */
+.product--featured {
+  background: #f1f8e9;
+  border-color: #aed581;
+}
+
+.product__badge {
+  grid-column: 1 / -1;
+  justify-self: start;      /* не растягивается на всю ширину карточки */
+  padding: 2px 10px;
+  background: #ff9800;
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border-radius: 999px;
+}
+
+/* Телефон: показываем 5 товаров, остальные — по кнопке */
+.catalog__grid--collapsed .product:nth-child(n + 6) {
+  display: none;
+}
+
+.catalog__more {
+  display: block;
+  width: 100%;
+  margin-top: 16px;
+  padding: 10px;
+  background: #fff;
+  border: 1px solid #b9c4b5;
+  border-radius: 8px;
+  font: inherit;
+  cursor: pointer;
+}
+
+.catalog__error {
+  padding: 12px;
+  color: #c62828;
+  background: #fdecec;
+  border: 1px solid #f2b8b8;
+  border-radius: 8px;
+}
+
+/* ===== Макет страницы (mobile-first) ===== */
+/* Телефон: всё в одну колонку, aside уходит под каталог */
+.layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  max-width: 1280px;
+  margin: 0 auto;           /* центрируем контент на широком экране */
+  padding: 16px;
+}
+
+.layout__aside {
+  background: #fff;
+  border: 1px solid #dfe6dc;
+  border-radius: 10px;
+  padding: 16px;
+}
+
+/* ===== Форма ===== */
+.order {
+  grid-column: 1 / -1;      /* вся ширина сетки */
+  background: #fff;
+  border: 1px solid #dfe6dc;
+  border-radius: 10px;
+  padding: 16px;
+}
+
+.order__form {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.order__form label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 0.9rem;
+}
+
+.order__form input,
+.order__form textarea {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #b9c4b5;
+  border-radius: 6px;
+  font: inherit;
+}
+
+/* Красная рамка у неверно заполненного поля */
+.order__form input:user-invalid {
+  border-color: #c62828;
+}
+
+.order__submit {
+  grid-column: 1 / -1;
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  background: #2e7d32;
+  color: #fff;
+  cursor: pointer;
+}
+
+/* ===== Подвал ===== */
+.bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px 24px;
+  background: #1f2a1f;
+  color: #fff;
+}
+
+.bottom a {
+  color: #c8e6c9;
+}
+
+.bottom address {
+  font-style: normal;
+}
+
+.bottom__copy {
+  margin: 0;
+}
+
+@media (min-width: 768px) {
+  .bottom {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  /* Карточки снова вертикальные */
+  .product {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    padding: 16px;
+  }
+
+  .product img {
+    width: 100%;
+    height: 160px;
+  }
+
+  .product p {
+    font-size: 1rem;
+  }
+
+  .product button {
+    margin-top: auto;       /* «съедает» свободное место — кнопка внизу */
+    padding: 10px;
+  }
+
+  /* «Товар недели» растягивается только при 2+ колонках */
+  .product--featured {
+    grid-column: span 2;
+  }
+
+  /* На планшете и выше показываем все товары */
+  .catalog__grid--collapsed .product:nth-child(n + 6) {
+    display: flex;
+  }
+
+  .catalog__more {
+    display: none;
+  }
+
+  .order__form {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* ===== Десктоп ===== */
+/* Каталог слева (3 доли), доставка справа (1 доля) */
+@media (min-width: 1024px) {
+  .layout {
+    grid-template-columns: 3fr 1fr;
+    padding: 24px;
+  }
+
+  .layout__aside {
+    align-self: start;      /* не растягиваться на всю высоту каталога */
+  }
+}
